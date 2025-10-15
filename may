@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Love Quiz</title>
+<style>
+  body {
+    font-family: monospace, monospace;
+    background: #228B22; /* forest green */
+    color: #fff0f6; /* light pinkish text for contrast */
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  #question {
+    margin-bottom: 1rem;
+  }
+  input[type="text"] {
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 2px solid #fff0f6;
+    border-radius: 5px;
+    background: transparent;
+    color: #fff0f6;
+  }
+  input[type="text"]::placeholder {
+    color: #d3c7c7;
+  }
+  button {
+    background-color: #fff0f6;
+    color: #228B22;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  #response {
+    margin: 1rem 0;
+    min-height: 2rem;
+  }
+  pre {
+    font-family: monospace;
+    font-size: 16px;
+    line-height: 18px;
+    white-space: pre;
+    text-align: center;
+    margin-top: 2rem;
+    color: #fff0f6;
+  }
+</style>
+</head>
+<body>
+
+<h1>Love Quiz ❤️</h1>
+<div id="intro">
+  Yo wsup ho, okay please play <em>"Someday by Alex Crichton"</em> at 1:25 and answer
+</div>
+
+<div id="question"></div>
+<input type="text" id="answer" autocomplete="off" placeholder="Type yes or no" />
+<button id="submitBtn">Answer</button>
+
+<div id="response"></div>
+<pre id="heart"></pre>
+
+<script>
+  const questions = [
+    "Is this Mayesha Madjid Mae?",
+    "Are you doing okay?",
+    "Are you in love with the owner of this program?",
+    "Would you be willing to give the owner of this program all you have?",
+    "Are you healed enough to be with someone who's as cool as the owner of this program?",
+    "Do you promise to love the owner of this program till eternity passes away?",
+    "Will you be honest and not let any external factor affect your decision in the tenth question?",
+    "Would you consider leaving the owner of this program for someone?",
+    "Can you fathom the level of goatedness I have?",
+    "Will you love me forever and be my girl, breh?"
+  ];
+
+  const correctAnswers = [
+    "yes", // Q1
+    "yes", // Q2
+    "yes", // Q3
+    "yes", // Q4
+    "yes", // Q5
+    "yes", // Q6
+    "yes", // Q7
+    "no",  // Q8
+    "yes", // Q9
+    "yes"  // Q10
+  ];
+
+  const responses = [
+    "goooooooooood girlyyyyyyylyy",
+    "damnnnnn nice hooooooooooooo",
+    "oh yeah lets make babies that look like abdul",
+    "oh yeah i love zamier so much brehhhhhhhbh",
+    "ohhhh yeah dadddddddyydydydydydydydy",
+    "what in the barack obama oh fuck eyayayyayayaya",
+    "lets make 6 billion babies",
+    "good nigga u better not leave me ill blow up tagal;og land if u leave ho",
+    "u a ho anywway breh",
+    "i love you more, always and from everywhere at any and every time"
+  ];
+
+  const oppositeMessage = "astag";
+
+  let currentQuestion = 0;
+
+  const questionDiv = document.getElementById("question");
+  const answerInput = document.getElementById("answer");
+  const submitBtn = document.getElementById("submitBtn");
+  const responseDiv = document.getElementById("response");
+  const heartPre = document.getElementById("heart");
+
+  function toLower(str) {
+    return str.trim().toLowerCase();
+  }
+
+  function showQuestion() {
+    responseDiv.textContent = "";
+    answerInput.value = "";
+    answerInput.focus();
+    questionDiv.textContent = `${currentQuestion + 1}. ${questions[currentQuestion]}`;
+  }
+
+  function checkAnswer(ans, expected) {
+    ans = toLower(ans);
+    expected = toLower(expected);
+
+    if (currentQuestion === 7 || currentQuestion === 8) {
+      // For Q8 and Q9 accept yes or no (both "correct")
+      if (ans === "yes" || ans === "y" || ans === "no" || ans === "n") return true;
+      return false;
+    } else {
+      if (ans === expected || ans === expected.charAt(0)) return true;
+      return false;
+    }
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  const heartLines = [
+    "      *****     *****      ",
+    "    ********* *********    ",
+    "  *************************",
+    " ***************************",
+    "*****************************",
+    "*****************************",
+    "******  lets love while we can  ******",
+    " ***************************",
+    "  *************************",
+    "    *********************   ",
+    "      *****************     ",
+    "        *************       ",
+    "          *********         ",
+    "            ***            ",
+    "             *             "
+  ];
+
+  async function showHeart() {
+    heartPre.textContent = "";
+    const totalLines = heartLines.length;
+    const totalTime = 30000; // 30 seconds
+    const delayPerLine = totalTime / totalLines;
+
+    for (let i = 0; i < totalLines; i++) {
+      heartPre.textContent += heartLines[i] + "\n";
+      await delay(delayPerLine);
+    }
+  }
+
+  submitBtn.addEventListener("click", async () => {
+    let ans = answerInput.value;
+    if (!ans) return;
+
+    let correct = checkAnswer(ans, correctAnswers[currentQuestion]);
+
+    if (correct) {
+      responseDiv.textContent = responses[currentQuestion];
+    } else {
+      responseDiv.textContent = oppositeMessage;
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+      await delay(1500);
+      showQuestion();
+    } else {
+      if (toLower(ans) === "yes" || toLower(ans) === "y") {
+        await delay(1500);
+        showHeart();
+      }
+      submitBtn.disabled = true;
+      answerInput.disabled = true;
+    }
+  });
+
+  showQuestion();
+</script>
+
+</body>
+</html>
